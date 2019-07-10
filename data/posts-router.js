@@ -87,6 +87,29 @@ router.post('/', async (req, res) => {
 });
 
 // update a post
+router.put('/:id', async (req, res) => {
+  const { title, contents } = req.body;
+  if (!title || !contents) {
+    res.status(400).json({
+      errorMessage: 'Please provide title and contents for the post'
+    });
+  } else {
+    try {
+      const post = await Posts.update(req.params.id, req.body);
+      if (post) {
+        res
+          .status(200)
+          .json(post)
+          .send({ message: 'Good' });
+      } else {
+        res.status(404).json({ message: 'That post could not be found.' });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Error deleting the post.' });
+    }
+  }
+});
 
 // delete a post
 router.delete('/:id', async (req, res) => {
